@@ -17,7 +17,7 @@ TARGETBASE = AttachWeights
 TARGET = $(TARGETBASE)$(TARGET_EXT)
 
 $(TARGET) : stdfx.o $(TARGETBASE).o
-	gcc -O3 -Wall -fPIC -o $(TARGET) stdafx.o $(TARGETBASE).o ../Pinocchio/libpinocchio.a -lstdc++
+	g++ -O3 -Wall -fPIC -o $(TARGET) stdafx.o $(TARGETBASE).o ../Pinocchio/libpinocchio.a -lstdc++
 
 stdfx.o : stdafx.cpp stdafx.h
 	$(CC) $(CCFLAGS) stdafx.cpp
