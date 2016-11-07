@@ -29,6 +29,7 @@
 Mesh::Mesh(const string &file)
     : scale(1.)
 {
+	withtexture = 0;
     int i;
 #define OUT { vertices.clear(); edges.clear(); return; }
     ifstream obj(file.c_str());
@@ -325,14 +326,27 @@ void Mesh::readPly(istream &strm)
                 Debugging::out() << "Error on line " << lineNum << endl;
                 OUT;
             }
-            
-            double x, y, z;
-            sscanf(words[0].c_str(), "%lf", &x);
-            sscanf(words[1].c_str(), "%lf", &y);
-            sscanf(words[2].c_str(), "%lf", &z);
-            
-            vertices.resize(vertices.size() + 1);
-            vertices.back().pos = Vector3(-z, x, -y);
+        double x,y,z;    
+	int t1, t2, t3, t4;
+               if(words.size() <= 6) {
+                       sscanf(words[0].c_str(), "%lf", &x);
+                       sscanf(words[1].c_str(), "%lf", &y);
+                       sscanf(words[2].c_str(), "%lf", &z);
+                       vertices.resize(vertices.size() + 1);
+                       vertices.back().pos = Vector3(-z, x, -y);
+               } else if (words.size() == 7) {
+                       withtexture = 1;
+                       sscanf(words[0].c_str(), "%lf", &x);
+                       sscanf(words[1].c_str(), "%lf", &y);
+                       sscanf(words[2].c_str(), "%lf", &z);
+                       sscanf(words[3].c_str(), "%i", &t1);
+                       sscanf(words[4].c_str(), "%i", &t2);
+                       sscanf(words[5].c_str(), "%i", &t3);
+                       sscanf(words[6].c_str(), "%i", &t4);
+                       vertices.resize(vertices.size() + 1);
+                       vertices.back().pos = Vector3(-z, x, -y);
+                       vertices.back().texture = Vector3(t1, t2, t3);
+		}
             continue;
         }
         

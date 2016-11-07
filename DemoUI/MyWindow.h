@@ -60,7 +60,7 @@ private:
 
     void resetTransform();
     void initGL();
-    void drawMesh(const Mesh &m, bool flatShading, Vector3 trans = Vector3());
+    void drawMesh(const Mesh &m, bool flatShading, bool texture, Vector3 trans = Vector3());
     void drawFloor();
 };
 

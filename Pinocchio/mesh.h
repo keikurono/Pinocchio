@@ -30,6 +30,7 @@ struct MeshVertex
     
     Vector3 pos;
     Vector3 normal;
+	Vector3 texture;
     int edge; //an edge such that edge->prev->vertex is this
 };
 
@@ -69,6 +70,7 @@ public: //data
 
     Vector3 toAdd;
     double scale;
+	int withtexture;
 };
 
 #endif

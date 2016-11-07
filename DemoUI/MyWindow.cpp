@@ -35,7 +35,7 @@ void idle(void *s)
         win->redraw();
 }
 
-MyWindow::MyWindow() : Fl_Gl_Window(1024, 768, "Pinocchio"), flatShading(true), floor(true), skeleton(false)
+MyWindow::MyWindow() : Fl_Gl_Window(1024, 768, "YouPlay"), flatShading(true), floor(true), skeleton(false)
 {
     size_range(20, 20, 5000, 5000);
     end();
@@ -188,7 +188,7 @@ void MyWindow::draw() {
         glMultMatrixf(matr);
         glDepthMask(0);
         for(i = 0; i < (int)ms.size(); ++i)
-            drawMesh(*(ms[i]), flatShading);                
+            drawMesh(*(ms[i]), flatShading, false);                
         glDepthMask(1);
         glEnable(GL_LIGHTING);
         glPopMatrix();
@@ -200,9 +200,11 @@ void MyWindow::draw() {
     glMaterialfv( GL_BACK, GL_AMBIENT_AND_DIFFUSE, colrb);
 
     //draw meshes
+        glDisable(GL_LIGHTING);
     for(i = 0; i < (int)meshes.size(); ++i) {
-        drawMesh(*(ms[i]), flatShading);
+        drawMesh(*(ms[i]), flatShading, true);
     }
+        glEnable(GL_LIGHTING);
 
     //draw lines
     glDisable(GL_DEPTH_TEST);
@@ -257,7 +259,7 @@ void MyWindow::initGL()
     glClearColor(0.f, 0.f, 0.f, 0.f);
 }
 
-void MyWindow::drawMesh(const Mesh &m, bool flatShading, Vector3 trans)
+void MyWindow::drawMesh(const Mesh &m, bool flatShading, bool texture, Vector3 trans)
 {
     int i;
     Vector3 normal;
@@ -266,6 +268,7 @@ void MyWindow::drawMesh(const Mesh &m, bool flatShading, Vector3 trans)
     for(i = 0; i < (int)m.edges.size(); ++i) {
         int v = m.edges[i].vertex;
         const Vector3 &p = m.vertices[v].pos;
+	const Vector3 &t = m.vertices[v].texture;
 
         if(!flatShading) {
             normal = m.vertices[v].normal;
@@ -277,6 +280,11 @@ void MyWindow::drawMesh(const Mesh &m, bool flatShading, Vector3 trans)
         
             normal = ((p2 - p) % (p3 - p)).normalize();
             glNormal3d(normal[0], normal[1], normal[2]);
+		if(texture) {
+                       glColor3f((t[0]+0.0)/255,(t[1]+0.0)/255,(t[2]+0.0)/255);
+                       //glColor3ub(t[0],t[1],t[2]);
+		}
+
         }
     
         glVertex3d(p[0] + trans[0], p[1] + trans[1], p[2] + trans[2]);
@@ -303,7 +311,7 @@ void MyWindow::drawFloor()
     glMaterialfv( GL_BACK, GL_AMBIENT_AND_DIFFUSE, colrb);
 
     glShadeModel(GL_SMOOTH);
-    drawMesh(floor, false);
+    drawMesh(floor, false, false);
     glShadeModel( flatShading ? GL_FLAT : GL_SMOOTH);
 
     glColor4d(.5, .6, .9, .3);
